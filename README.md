@@ -13,6 +13,7 @@ When I learn a new language, I often meet some new words in sentences in daily l
 ## 2. Features
 
 - Extracting new words from long text in daily life (by words segmentation system), such as news paragraph, chat message.
+- Connecting the original natural corpus with new words and the corpus is used as an example sentence of the words.
 - Automatic recognition of word prototypes (for words in synthetic language).
 - Automatic recognition of parts of speech.
 - Support the statistics of word frequency.
