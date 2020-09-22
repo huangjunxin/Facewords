@@ -1,6 +1,6 @@
 # 语见单词 (Facewords)
 
-A personal vocabulary construction tool based on natural corpus built by Flutter
+A personal new word bank construction tool based on natural corpus built by Flutter
 
 利用Flutter建立的基于自然语料的个人生词库构建工具
 
