@@ -8,7 +8,7 @@ A personal vocabulary construction tool based on natural corpus built by Flutter
 
 ## 1. Inspiration
 
-When I learn a new language, I often meet some new words in sentences in daily life. I can surely understand the meaning after looking up dictionary while I can't classify it and review it later easily. This often happens, especially when learning small languages.
+When I learn a new language, I often meet some new words in sentences in daily life. I can surely understand the meaning after looking up dictionary while I can't classify it and review it later easily. This often happens, especially when learning small languages. According to the research, the effect of memorizing words through the actual context is more prominent. I decided to write this app to assist learning words.
 
 ## 2. Features
 
