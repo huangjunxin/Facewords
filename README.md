@@ -1,16 +1,33 @@
-# facewords
+# 语见单词 (Facewords)
 
-A personal new word bank construction tool based on natural corpus built by Flutter.
+A personal new word bank construction tool based on natural corpus built by Flutter
 
-## Getting Started
+利用Flutter建立的基于自然语料的个人生词库构建工具
 
-This project is a starting point for a Flutter application.
+*In fact, this is also my Android development course assignment*
 
-A few resources to get you started if this is your first Flutter project:
+Current version: Alpha 0.0.1
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 1. Inspiration
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+When I learn a new language, I often meet some new words in sentences in daily life. I can surely understand the meaning after looking up dictionary while I can't classify it and review it later easily. This often happens, especially when learning small languages. According to the research, the effect of memorizing words through the actual context is more prominent. I decided to write this app to assist learning words.
+
+## 2. Features
+
+- Extracting new words from long text in daily life (by words segmentation system), such as news paragraph, chat message.
+- Connecting the original natural corpus with new words and the corpus is used as an example sentence of the words.
+- Automatic recognition of word prototypes (for words in synthetic language).
+- Automatic recognition of parts of speech.
+- Support the statistics of word frequency.
+- Support jump to dictionary website for word meaning query.
+- Support custom word meaning.
+- Support the export of personal new word bank to CSV format.
+
+*Only Japanese sentences and words are supported for the time being*
+
+## 3. Pages
+
+- Natural corpus submission page
+- Word list page
+- Word query page
+- Word custom page
