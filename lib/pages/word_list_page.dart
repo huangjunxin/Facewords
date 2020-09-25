@@ -29,8 +29,8 @@ class _WordListPageState extends State<WordListPage> {
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.all(10),
-        children: _getSegmentedData()
-      )
+        children: _getSegmentedData(),
+      ),
     );
   }
 }
