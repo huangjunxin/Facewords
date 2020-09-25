@@ -6,7 +6,17 @@ class SubmissionPage extends StatefulWidget {
 }
 
 class _SubmissionPageState extends State<SubmissionPage> {
-  String submissionLang = 'ja';
+  // 语料语言选择
+  String corpusLanguage = 'ja';
+  // 语料输入框 controller
+  final corpusTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    corpusTextController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +31,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
               child: Column(
                 children: <Widget>[
                   TextField(
+                    controller: corpusTextController,
                     autofocus: true,
                     keyboardType: TextInputType.multiline,
                     minLines: 1,
@@ -36,20 +47,20 @@ class _SubmissionPageState extends State<SubmissionPage> {
                       Text('Language: Japanese'),
                       Radio(
                         value: 'ja',
-                        groupValue: this.submissionLang,
+                        groupValue: this.corpusLanguage,
                         onChanged: (value) {
                           setState(() {
-                            this.submissionLang = value;
+                            this.corpusLanguage = value;
                           });
                         },
                       ),
                       // Text('Vietnamese'),
                       // Radio(
                       //   value: 'vi',
-                      //   groupValue: this.submissionLang,
+                      //   groupValue: this.corpusLanguage,
                       //   onChanged: (value) {
                       //     setState(() {
-                      //       this.submissionLang = value;
+                      //       this.corpusLanguage = value;
                       //     });
                       //   },
                       // ),
@@ -63,6 +74,11 @@ class _SubmissionPageState extends State<SubmissionPage> {
               onPressed: () {
                 print(
                     '[_SubmissionPageState][RaisedButton][onPressed]: Submit!');
+                Navigator.pushNamed(context, '/submit_result_page', arguments: {
+                  'submitUrl':
+                      'https://mecab-web-api.herokuapp.com/v1/parse?sentence=',
+                  'paras': corpusTextController.text,
+                });
               },
             ),
           ],

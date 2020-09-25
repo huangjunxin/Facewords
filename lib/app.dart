@@ -1,3 +1,4 @@
+import 'package:facewords/pages/submit_result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facewords/tabs.dart';
 
@@ -6,6 +7,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  // 命名路由配置
+  final routes = {
+    '/': (context) => Tabs(),
+    '/submit_result_page': (context, {arguments}) =>
+        SubmitResultPage(arguments: arguments),
+  };
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -20,21 +28,26 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // routes: <String, WidgetBuilder> {
-      //   "dictionaries": (BuildContext context) => WebviewScaffold(
-      //     url: "https://jisho.org/search/%E6%98%A8%E6%97%A5",
-      //     appBar: AppBar(
-      //       title: Text('Jisho'),
-      //       leading: IconButton(
-      //         icon: Icon(Icons.arrow_back),
-      //         onPressed: () {
-      //           Navigator.of(context).pushReplacementNamed('app');
-      //         },
-      //       )
-      //     ),
-      //   )
-      // },
-      home: Tabs(),
+      // 利用初始路由加载 Tabs：'/': (context) => Tabs()
+      initialRoute: '/',
+      // 命名路由统一传参处理方法 onGenerateRoute
+      // ignore: missing_return
+      onGenerateRoute: (RouteSettings settings) {
+        final String name = settings.name;
+        final Function pageContentBuilder = this.routes[name];
+        if (pageContentBuilder != null) {
+          if (settings.arguments != null) {
+            final Route route = MaterialPageRoute(
+                builder: (context) =>
+                    pageContentBuilder(context, arguments: settings.arguments));
+            return route;
+          } else {
+            final Route route = MaterialPageRoute(
+                builder: (context) => pageContentBuilder(context));
+            return route;
+          }
+        }
+      },
     );
   }
 }
