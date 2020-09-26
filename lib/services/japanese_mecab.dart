@@ -1,4 +1,4 @@
-List segmentedData = [
+List wordList = [
   {
     "morpheme": "通常",
     "surface": "天気",

@@ -7,10 +7,11 @@ class WordListPage extends StatefulWidget {
 }
 
 class _WordListPageState extends State<WordListPage> {
-  // 格式化 segmentedData
-  List<Widget> _getSegmentedData() {
+  // 格式化 wordList
+  List<Widget> _formatWordList() {
+    print('[_WordListPageState][_formatWordList]');
     List<Widget> tempList = [];
-    for (var item in segmentedData) {
+    for (var item in wordList) {
       if (item['pos'] == '記号') {
         // 若当前项为符号，则忽略此项
       } else {
@@ -29,7 +30,7 @@ class _WordListPageState extends State<WordListPage> {
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.all(10),
-        children: _getSegmentedData(),
+        children: _formatWordList(),
       ),
     );
   }
