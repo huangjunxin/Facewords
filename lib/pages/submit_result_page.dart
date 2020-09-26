@@ -27,10 +27,12 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
     print('[_SubmitResultPageState][_formatWordList]');
     List<Widget> tempList = [];
     for (var item in _resultList) {
-      if (item['pos'] == '1記号') {
-        // 若当前项为 符号，则忽略此项
-        // 将默认全选后的 _selectedList 的 符号 也删去
-        // _selectedList.remove(item);
+      if (item['pos'] == '記号') {
+        // 若当前项为 符号，则此项不允许被选中
+        tempList.add(ChoiceChip(
+          label: Text(item['surface']),
+          selected: _selectedList.contains(item),
+        ));
       } else {
         // 否则则直接显示
         tempList.add(ChoiceChip(
@@ -59,11 +61,6 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
       setState(() {
         this._resultList =
             jsonDecode(utf8.decode(res.bodyBytes))['items'][0]['words'];
-        // // 默认全选
-        // this._selectedList = List.generate(
-        //   this._resultList.length,
-        //   (index) => this._resultList[index],
-        // );
       });
     } else {
       throw Exception('failed');
@@ -73,24 +70,47 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Result'),
-        ),
-        body: this._resultList.length > 0
-            ? Scrollbar(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Wrap(
-                      spacing: 5.0,
-                      runSpacing: 3.0,
-                      children: _formatWordList,
-                    ),
+      appBar: AppBar(
+        title: Text('Result'),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Continue'),
+            textColor: Colors.white,
+            color: Color(0x000000),
+            onPressed: this._resultList.length == 0 // 若请求 api 未获取到结果
+                ? null // 则使按钮 disabled
+                : () { // 否则，下方为点击按钮所做的操作
+                    print(
+                        '[_SubmitResultPageState][FlatButton][onPressed]: Continue');
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/',
+                      (route) => route == null,
+                      arguments: {
+                        'index': 0,
+                        'wordList': this._selectedList,
+                      },
+                    );
+                  },
+          )
+        ],
+      ),
+      body: this._resultList.length > 0 // 若请求 api 获取到结果
+          ? Scrollbar(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Wrap(
+                    spacing: 5.0,
+                    runSpacing: 2.0,
+                    children: _formatWordList,
                   ),
                 ),
-              )
-            : Center(
-                child: CircularProgressIndicator(),
-              ));
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
+    );
   }
 }

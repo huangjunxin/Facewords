@@ -8,13 +8,25 @@ import 'package:facewords/pages/word_list_page.dart';
 import 'package:facewords/pages/setting_page.dart';
 
 class Tabs extends StatefulWidget {
+  Map arguments;
+  Tabs({Key key, this.arguments}) : super(key: key);
+
   @override
   _TabsState createState() => _TabsState();
 }
 
 class _TabsState extends State<Tabs> {
   // 当前选中 Tab 序号
-  int _currentIndex = 0;
+  int _currentIndex;
+  // 接收 index 参数，跳转到指定 Tab 内容页
+  @override
+  void initState() {
+    super.initState();
+    this._currentIndex = widget.arguments == null
+        ? 1 // index 参数默认为 0
+        : widget.arguments['index'];
+  }
+
   // 每个 Tab 对应不同的内容页
   List<Widget> _pageList = [
     SubmissionPage(),

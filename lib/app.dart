@@ -1,4 +1,5 @@
 import 'package:facewords/pages/submit_result_page.dart';
+import 'package:facewords/pages/word_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:facewords/tabs.dart';
 
@@ -9,7 +10,7 @@ void main() {
 class MyApp extends StatelessWidget {
   // 命名路由配置
   final routes = {
-    '/': (context) => Tabs(),
+    '/': (context, {arguments}) => Tabs(arguments: arguments),
     '/submit_result_page': (context, {arguments}) =>
         SubmitResultPage(arguments: arguments),
   };
