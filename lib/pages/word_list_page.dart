@@ -1,3 +1,4 @@
+import 'package:facewords/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:facewords/services/japanese_mecab.dart';
 
@@ -7,6 +8,20 @@ class WordListPage extends StatefulWidget {
 }
 
 class _WordListPageState extends State<WordListPage> {
+  Map<String, dynamic> newWord = {};
+  Future _wordFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _wordFuture = getWord();
+  }
+
+  getWord() async {
+    final _wordData = await DBProvider.db.getWord();
+    return _wordData;
+  }
+
   // 格式化 wordList
   List<Widget> _formatWordList() {
     print('[_WordListPageState][_formatWordList]');

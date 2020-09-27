@@ -1,3 +1,5 @@
+import 'package:facewords/models/word.dart';
+import 'package:facewords/utils/database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -88,9 +90,19 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
                       (route) => route == null,
                       arguments: {
                         'index': 0,
-                        'wordList': this._selectedList,
+                        // 'wordList': this._selectedList,
                       },
                     );
+                    for (var item in _selectedList) {
+                      var newDBWord = Word(
+                        word: item['baseform'],
+                        language: 'ja',
+                        pos: item['pos'],
+                        meaning: null,
+                        count: 1,
+                      );
+                      DBProvider.db.newWord(newDBWord);
+                    }
                   },
           )
         ],

@@ -23,7 +23,7 @@ class _TabsState extends State<Tabs> {
   void initState() {
     super.initState();
     this._currentIndex = widget.arguments == null
-        ? 1 // index 参数默认为 0
+        ? 0 // index 参数默认为 0
         : widget.arguments['index'];
   }
 
