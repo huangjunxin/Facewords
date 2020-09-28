@@ -70,4 +70,9 @@ class DBProvider {
       return resWordList;
     }
   }
+  
+  deleteWord(int wordId) async {
+    final db = await database;
+    return db.delete('wordList', where: 'wordId = ?', whereArgs: [wordId]);
+  }
 }

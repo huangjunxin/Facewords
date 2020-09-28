@@ -61,6 +61,7 @@ class _WordListPageState extends State<WordListPage> {
                   key: UniqueKey(),
                   onDismissed: (direction) {
                     print('[_WordListPageState][ListView][Dismissible][onDismissed]');
+                    DBProvider.db.deleteWord(item.wordId);
                   },
                   child: ListTile(
                     leading: Icon(Icons.book, size: 30),
