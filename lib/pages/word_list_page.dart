@@ -19,6 +19,7 @@ class _WordListPageState extends State<WordListPage> {
   }
 
   Future<List<Word>> getWordList() async {
+    print('[_WordListPageState][getWordList]');
     final _wordListData = await DBProvider.db.getWordList();
     return _wordListData;
   }
@@ -61,10 +62,22 @@ class _WordListPageState extends State<WordListPage> {
                   Word item = snapshot.data[index];
                   return Dismissible(
                     background: Container(color: Colors.red), // 项被滑出时显示红色背景
-                    key: UniqueKey(),
-                    onDismissed: (direction) {
-                      print('[_WordListPageState][ListView][Dismissible][onDismissed]');
+                    key: Key(item.wordId.toString()),
+                    onDismissed: (direction) async {
+                      print('[_WordListPageState][ListView][Dismissible][onDismissed]: ${item.word}(id: ${item.wordId}) is dismissed');
                       DBProvider.db.deleteWord(item.wordId);
+                      // 刷新状态，以防出现 A dismissed Dismissible widget is still part of the tree 报错
+                      // https://stackoverflow.com/questions/58583950/how-to-resolve-issue-a-dismissed-dismissible-widget-is-still-part-of-the-tree
+                      setState(() {
+                        _wordListFuture.then((value) {
+                          value.remove(item);
+                        });
+                      });
+                      // 删除成功后显示下方提示栏
+                      Scaffold.of(context).hideCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        content: Text('"${item.word}" is deleted'),
+                      ));
                     },
                     child: ListTile(
                       leading: Icon(Icons.book, size: 30),
@@ -72,7 +85,7 @@ class _WordListPageState extends State<WordListPage> {
                     ),
                   );
                 },
-              )
+              ),
             );
           } else {
             // 若无数据
