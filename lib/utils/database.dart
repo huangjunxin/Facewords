@@ -1,7 +1,7 @@
+import 'package:facewords/models/word.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:facewords/models/word.dart';
 
 class DBProvider {
   DBProvider._();
@@ -58,14 +58,16 @@ class DBProvider {
     return res;
   }
 
-  Future<dynamic> getWord() async {
+  Future<List<Word>> getWordList() async {
     final db = await database;
     var res = await db.query('wordList');
     if (res.length == 0) {
       return null;
     } else {
-      var resMap = res[0];
-      return resMap.isNotEmpty ? resMap : null;
+      List<Word> resWordList = (res.isNotEmpty
+          ? res.map((value) => Word.fromJson(value)).toList()
+          : null);
+      return resWordList;
     }
   }
 }
