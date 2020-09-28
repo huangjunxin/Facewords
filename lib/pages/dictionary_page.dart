@@ -13,28 +13,50 @@ class _DictionaryPageState extends State<DictionaryPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 4,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Dictionary'),
           bottom: TabBar(
             tabs: <Widget>[
               Tab(text: 'Jisho'),
-              Tab(text: 'Kotobank'),
+              Tab(text: 'Weblio'),
+              Tab(text: 'JapanDict'),
+              Tab(text: 'Souka'),
             ],
           ),
         ),
         body: TabBarView(
+          // 禁止左右滑动切换 Tab
+          physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            WebView(
-              initialUrl:
-                  'https://jisho.org/search/${widget.arguments['word']}',
-              javascriptMode: JavascriptMode.unrestricted,
+            Scrollbar(
+              child: WebView(
+                initialUrl:
+                'https://jisho.org/search/${widget.arguments['word']}',
+                javascriptMode: JavascriptMode.unrestricted,
+              ),
             ),
-            WebView(
-              initialUrl:
-                  'https://kotobank.jp/gs/?q=${widget.arguments['word']}',
-              javascriptMode: JavascriptMode.unrestricted,
+            Scrollbar(
+              child: WebView(
+                initialUrl:
+                'https://www.weblio.jp/content/${widget.arguments['word']}',
+                javascriptMode: JavascriptMode.unrestricted,
+              ),
+            ),
+            Scrollbar(
+              child: WebView(
+                initialUrl:
+                'https://www.japandict.com/${widget.arguments['word']}',
+                javascriptMode: JavascriptMode.unrestricted,
+              ),
+            ),
+            Scrollbar(
+              child: WebView(
+                initialUrl:
+                'https://soukaapp.com/dict/${widget.arguments['word']}',
+                javascriptMode: JavascriptMode.unrestricted,
+              ),
             ),
           ],
         ),
