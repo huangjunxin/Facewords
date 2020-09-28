@@ -60,28 +60,50 @@ class _WordListPageState extends State<WordListPage> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   Word item = snapshot.data[index];
-                  return Dismissible(
-                    background: Container(color: Colors.red), // 项被滑出时显示红色背景
-                    key: Key(item.wordId.toString()),
-                    onDismissed: (direction) async {
-                      print('[_WordListPageState][ListView][Dismissible][onDismissed]: ${item.word}(id: ${item.wordId}) is dismissed');
-                      DBProvider.db.deleteWord(item.wordId);
-                      // 刷新状态，以防出现 A dismissed Dismissible widget is still part of the tree 报错
-                      // https://stackoverflow.com/questions/58583950/how-to-resolve-issue-a-dismissed-dismissible-widget-is-still-part-of-the-tree
-                      setState(() {
-                        _wordListFuture.then((value) {
-                          value.remove(item);
-                        });
+                  return GestureDetector(
+                    onLongPress: () {
+                      print('[_WordListPageState][ListView][GestureDetector][onLongPress]: ${item.word}(id: ${item.wordId}) is long pressed');
+                      Navigator.pushNamed(context, '/dictionary_page', arguments: {
+                        'word': item.word,
+                        'language': item.language,
                       });
-                      // 删除成功后显示下方提示栏
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                        content: Text('"${item.word}" is deleted'),
-                      ));
                     },
-                    child: ListTile(
-                      leading: Icon(Icons.book, size: 30),
-                      title: Text(item.word),
+                    child: Dismissible(
+                      background: Container(color: Colors.red), // 项被滑出时显示红色背景
+                      key: Key(item.wordId.toString()),
+                      onDismissed: (direction) async {
+                        print('[_WordListPageState][ListView][Dismissible][onDismissed]: ${item.word}(id: ${item.wordId}) is dismissed');
+                        DBProvider.db.deleteWord(item.wordId);
+                        // 刷新状态，以防出现 A dismissed Dismissible widget is still part of the tree 报错
+                        // https://stackoverflow.com/questions/58583950/how-to-resolve-issue-a-dismissed-dismissible-widget-is-still-part-of-the-tree
+                        setState(() {
+                          _wordListFuture.then((value) {
+                            value.remove(item);
+                          });
+                        });
+                        // 删除成功后显示下方提示栏
+                        Scaffold.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('"${item.word}" is deleted'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () async {
+                                // 撤销删除
+                                print('[_WordListPageState][ListView][SnackBar][onPressed]: ${item.word}(id: ${item.wordId}) is restored');
+                                await DBProvider.db.newWord(item);
+                                setState(() {
+                                  _wordListFuture = getWordList();
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.book, size: 30),
+                        title: Text(item.word),
+                      ),
                     ),
                   );
                 },

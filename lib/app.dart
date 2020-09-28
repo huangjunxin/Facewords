@@ -1,3 +1,4 @@
+import 'package:facewords/pages/dictionary_page.dart';
 import 'package:facewords/pages/submit_result_page.dart';
 import 'package:facewords/pages/word_list_page.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ class MyApp extends StatelessWidget {
     '/': (context, {arguments}) => Tabs(arguments: arguments),
     '/submit_result_page': (context, {arguments}) =>
         SubmitResultPage(arguments: arguments),
+    '/dictionary_page': (context, {arguments}) =>
+        DictionaryPage(arguments: arguments),
   };
 
   // This widget is the root of your application.
