@@ -6,7 +6,7 @@ A personal new word bank construction tool based on natural corpus built by Flut
 
 *In fact, this is also my Android development course assignment*
 
-Current version: Alpha 0.0.16
+Current version: Alpha 0.0.19
 
 ## 1. Inspiration
 

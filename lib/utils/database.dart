@@ -1,4 +1,5 @@
 import 'package:facewords/models/word.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -58,6 +59,7 @@ class DBProvider {
     return res;
   }
 
+  // 获取整个 wordList
   Future<List<Word>> getWordList() async {
     final db = await database;
     var res = await db.query('wordList');
@@ -70,9 +72,36 @@ class DBProvider {
       return resWordList;
     }
   }
-  
+
+  // 根据 word 获取单个 word
+  Future<Word> getWordByWord(String word) async {
+    final db = await database;
+    var res = await db.query(
+      'wordList',
+      where: 'word = ?',
+      whereArgs: [word],
+    );
+    return res.isNotEmpty ? Word.fromJson(res[0]) : null;
+  }
+
+  // 根据 wordId 删除 word
   deleteWord(int wordId) async {
     final db = await database;
-    return db.delete('wordList', where: 'wordId = ?', whereArgs: [wordId]);
+    return db.delete(
+      'wordList',
+      where: 'wordId = ?',
+      whereArgs: [wordId],
+    );
+  }
+  
+  // 根据 word 修改 word
+  updateWord(Word updatedWord) async {
+    final db = await database;
+    return db.update(
+      'WordList',
+      updatedWord.toJson(),
+      where: 'wordId = ?',
+      whereArgs: [updatedWord.wordId],
+    );
   }
 }

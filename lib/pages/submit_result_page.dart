@@ -69,6 +69,19 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
     }
   }
 
+  // 跳转至 Word List
+  jumpToWordListPage() {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/',
+      (route) => route == null,
+      arguments: {
+        'index': 1, // 跳转到 Word List 页
+        // 'wordList': this._selectedList,
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,28 +94,35 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
             color: Color(0x000000),
             onPressed: this._resultList.length == 0 // 若请求 api 未获取到结果
                 ? null // 则使按钮 disabled
-                : () { // 否则，下方为点击按钮所做的操作
+                : () async {
+                    // 否则，下方为点击按钮所做的操作
                     print(
                         '[_SubmitResultPageState][FlatButton][onPressed]: Continue');
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/',
-                      (route) => route == null,
-                      arguments: {
-                        'index': 0,
-                        // 'wordList': this._selectedList,
-                      },
-                    );
                     for (var item in _selectedList) {
-                      var newDBWord = Word(
-                        word: item['baseform'],
-                        language: 'ja',
-                        pos: item['pos'],
-                        meaning: null,
-                        count: 1,
-                      );
-                      DBProvider.db.newWord(newDBWord);
+                      var wordFuture =
+                          await DBProvider.db.getWordByWord(item['baseform']);
+
+                      if (wordFuture != null) {
+                        // 若数据库中已存在当前项，则只将其count值加1
+                        print(
+                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item['baseform']} already exists');
+                        wordFuture.count++;
+                        await DBProvider.db.updateWord(wordFuture);
+                      } else {
+                        // 若数据库中不存在当前项，则新增项目
+                        print(
+                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item['baseform']} does not exist');
+                        var newDBWord = Word(
+                          word: item['baseform'],
+                          language: 'ja',
+                          pos: item['pos'],
+                          meaning: null,
+                          count: 1,
+                        );
+                        await DBProvider.db.newWord(newDBWord);
+                      }
                     }
+                    jumpToWordListPage();
                   },
           )
         ],

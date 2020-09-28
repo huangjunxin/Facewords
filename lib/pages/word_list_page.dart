@@ -52,28 +52,32 @@ class _WordListPageState extends State<WordListPage> {
         // 获取 wordList 中所有内容
         future: _wordListFuture,
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          // 若有数据则用列表显示
           if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                Word item = snapshot.data[index];
-                return Dismissible(
-                  key: UniqueKey(),
-                  onDismissed: (direction) {
-                    print('[_WordListPageState][ListView][Dismissible][onDismissed]');
-                    DBProvider.db.deleteWord(item.wordId);
-                  },
-                  child: ListTile(
-                    leading: Icon(Icons.book, size: 30),
-                    title: Text(item.word),
-                  ),
-                );
-              },
+            return Scrollbar(
+              child: ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Word item = snapshot.data[index];
+                  return Dismissible(
+                    background: Container(color: Colors.red), // 项被滑出时显示红色背景
+                    key: UniqueKey(),
+                    onDismissed: (direction) {
+                      print('[_WordListPageState][ListView][Dismissible][onDismissed]');
+                      DBProvider.db.deleteWord(item.wordId);
+                    },
+                    child: ListTile(
+                      leading: Icon(Icons.book, size: 30),
+                      title: Text(item.word),
+                    ),
+                  );
+                },
+              )
             );
           } else {
-            // 若未获取到数据，则显示缓冲动画
+            // 若无数据
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text('No data'),
             );
           }
         },
