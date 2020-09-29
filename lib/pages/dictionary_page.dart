@@ -10,6 +10,9 @@ class DictionaryPage extends StatefulWidget {
 }
 
 class _DictionaryPageState extends State<DictionaryPage> {
+  bool _isLoading = true;
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -24,39 +27,98 @@ class _DictionaryPageState extends State<DictionaryPage> {
               Tab(text: 'JapanDict'),
               Tab(text: 'Souka'),
             ],
+            onTap: (index) {
+              print(
+                  '[_DictionaryPageState][DefaultTabController][TabBar][onTap]: $index');
+              // 防止点击当前 Tab 时出现 CircularProgressIndicator
+              if (index != _currentIndex) {
+                setState(() {
+                  _isLoading = true;
+                  _currentIndex = index;
+                });
+              }
+            },
           ),
         ),
         body: TabBarView(
           // 禁止左右滑动切换 Tab
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            Scrollbar(
-              child: WebView(
-                initialUrl:
-                'https://jisho.org/search/${widget.arguments['word']}',
-                javascriptMode: JavascriptMode.unrestricted,
-              ),
+            Stack(
+              children: <Widget>[
+                WebView(
+                  initialUrl:
+                      'https://jisho.org/search/${widget.arguments['word']}',
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onPageFinished: (_) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ],
             ),
-            Scrollbar(
-              child: WebView(
-                initialUrl:
-                'https://www.weblio.jp/content/${widget.arguments['word']}',
-                javascriptMode: JavascriptMode.unrestricted,
-              ),
+            Stack(
+              children: <Widget>[
+                WebView(
+                  initialUrl:
+                      'https://www.weblio.jp/content/${widget.arguments['word']}',
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onPageFinished: (_) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ],
             ),
-            Scrollbar(
-              child: WebView(
-                initialUrl:
-                'https://www.japandict.com/${widget.arguments['word']}',
-                javascriptMode: JavascriptMode.unrestricted,
-              ),
+            Stack(
+              children: <Widget>[
+                WebView(
+                  initialUrl:
+                      'https://www.japandict.com/${widget.arguments['word']}',
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onPageFinished: (_) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ],
             ),
-            Scrollbar(
-              child: WebView(
-                initialUrl:
-                'https://soukaapp.com/dict/${widget.arguments['word']}',
-                javascriptMode: JavascriptMode.unrestricted,
-              ),
+            Stack(
+              children: <Widget>[
+                WebView(
+                  initialUrl:
+                      'https://soukaapp.com/dict/${widget.arguments['word']}',
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onPageFinished: (_) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
+              ],
             ),
           ],
         ),

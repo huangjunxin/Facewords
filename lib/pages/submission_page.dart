@@ -32,7 +32,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                 children: <Widget>[
                   TextField(
                     controller: corpusTextController,
-                    autofocus: true,
+                    // autofocus: true,
                     keyboardType: TextInputType.multiline,
                     minLines: 1,
                     maxLines: 10,
