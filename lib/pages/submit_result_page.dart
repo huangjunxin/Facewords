@@ -77,7 +77,6 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
       (route) => route == null,
       arguments: {
         'index': 1, // 跳转到 Word List 页
-        // 'wordList': this._selectedList,
       },
     );
   }
