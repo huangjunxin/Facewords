@@ -62,7 +62,10 @@ class DBProvider {
   // 获取整个 wordList
   Future<List<Word>> getWordList() async {
     final db = await database;
-    var res = await db.query('wordList');
+    var res = await db.query(
+      'wordList',
+      orderBy: 'wordId DESC',
+    );
     if (res.length == 0) {
       return null;
     } else {
@@ -93,7 +96,7 @@ class DBProvider {
       whereArgs: [wordId],
     );
   }
-  
+
   // 根据 word 修改 word
   updateWord(Word updatedWord) async {
     final db = await database;
