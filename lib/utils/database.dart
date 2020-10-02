@@ -1,3 +1,4 @@
+import 'package:facewords/models/corpus.dart';
 import 'package:facewords/models/word.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -24,6 +25,7 @@ class DBProvider {
 
   // 初始化数据库
   initDB() async {
+    print('[DBProvider][initDB]');
     // 获取文档目录
     return await openDatabase(join(await getDatabasesPath(), 'facewords.db'),
         onCreate: (db, version) async {
@@ -37,9 +39,19 @@ class DBProvider {
             count INTEGER
           )
         ''');
+      // 创建一个表格应该用一个独立的 execute
+      await db.execute('''
+        CREATE TABLE corpusList (
+          corpusId INTEGER PRIMARY KEY AUTOINCREMENT,
+          corpus TEXT,
+          language TEXT,
+          wordId INTEGER
+        )
+      ''');
     }, version: 1);
   }
 
+  // 增加一个 word
   newWord(Word newWord) async {
     final db = await database;
 
@@ -53,7 +65,25 @@ class DBProvider {
       newWord.language,
       newWord.pos,
       newWord.meaning,
-      newWord.count
+      newWord.count,
+    ]);
+
+    return res;
+  }
+
+  // 增加一个 corpus
+  newCorpus(Corpus newCorpus) async {
+    final db = await database;
+
+    var res = await db.rawInsert('''
+      INSERT INTO corpusList (
+        corpusId, corpus, language, wordId
+      ) VALUES (?, ?, ?, ?)
+    ''', [
+      newCorpus.corpusId,
+      newCorpus.corpus,
+      newCorpus.language,
+      newCorpus.wordId,
     ]);
 
     return res;
@@ -71,6 +101,24 @@ class DBProvider {
     } else {
       List<Word> resWordList = (res.isNotEmpty
           ? res.map((value) => Word.fromJson(value)).toList()
+          : null);
+      return resWordList;
+    }
+  }
+
+  // 根据 wordId 获取相应的 corpusList
+  Future<List<Corpus>> getCorpusByWordId(int wordId) async {
+    final db = await database;
+    var res = await db.query(
+      'corpusList',
+      where: 'wordId = ?',
+      whereArgs: [wordId],
+    );
+    if (res.length == 0) {
+      return null;
+    } else {
+      List<Corpus> resWordList = (res.isNotEmpty
+          ? res.map((value) => Corpus.fromJson(value)).toList()
           : null);
       return resWordList;
     }

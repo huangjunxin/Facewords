@@ -78,6 +78,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                   'submitUrl':
                       'https://mecab-web-api.herokuapp.com/v1/parse?sentence=',
                   'paras': corpusTextController.text,
+                  'language': corpusLanguage,
                 });
               },
             ),

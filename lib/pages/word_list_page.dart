@@ -1,7 +1,6 @@
 import 'package:facewords/models/word.dart';
 import 'package:facewords/utils/database.dart';
 import 'package:flutter/material.dart';
-import 'package:facewords/services/japanese_mecab.dart';
 
 class WordListPage extends StatefulWidget {
   @override
@@ -9,7 +8,6 @@ class WordListPage extends StatefulWidget {
 }
 
 class _WordListPageState extends State<WordListPage> {
-  Map<String, dynamic> newWord = {};
   Future<List<Word>> _wordListFuture;
 
   @override
@@ -125,11 +123,11 @@ class _WordListPageState extends State<WordListPage> {
                     onLongPress: () {
                       print(
                           '[_WordListPageState][ListView][GestureDetector][onLongPress]: ${item.word}(id: ${item.wordId}) is long pressed');
-                      Navigator.pushNamed(context, '/dictionary_page',
-                          arguments: {
-                            'word': item.word,
-                            'language': item.language,
-                          });
+                      Navigator.pushNamed(
+                        context,
+                        '/dictionary_page',
+                        arguments: item.toJson(), // 传整个 item 过去
+                      );
                     },
                     child: Dismissible(
                       background: slideRightBackground(), // 项被从右到左滑出
@@ -141,15 +139,11 @@ class _WordListPageState extends State<WordListPage> {
                           return true;
                         } else if (direction == DismissDirection.startToEnd) {
                           // 若滑动方向为从左到右，则做：跳转至单词释义修改页面
-                          Navigator.pushNamed(context, '/edit_word_page',
-                              arguments: {
-                                'wordId': item.wordId,
-                                'word': item.word,
-                                'language': item.language,
-                                'pos': item.pos,
-                                'meaning': item.meaning,
-                                'count': item.count,
-                              });
+                          Navigator.pushNamed(
+                            context,
+                            '/edit_word_page',
+                            arguments: item.toJson(), // 传整个 item 过去
+                          );
                           // Dismiss 不进行删除
                           return false;
                         } else {
@@ -194,7 +188,8 @@ class _WordListPageState extends State<WordListPage> {
                         leading: Icon(Icons.book, size: 30),
                         title: Text(item.word),
                         subtitle: (item.meaning != null)
-                            ? ((item.meaning.length != 0) // 当 meaning 不为 null 也不为 空字符串 时才显示
+                            ? ((item.meaning.length !=
+                                    0) // 当 meaning 不为 null 也不为 空字符串 时才显示
                                 ? Text(item.meaning)
                                 : null)
                             : null,

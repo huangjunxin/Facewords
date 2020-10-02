@@ -1,3 +1,4 @@
+import 'package:facewords/models/corpus.dart';
 import 'package:facewords/models/word.dart';
 import 'package:facewords/utils/database.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +119,18 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
                           meaning: null,
                           count: 1,
                         );
+                        // 将新单词增加至数据库
                         await DBProvider.db.newWord(newDBWord);
+                        // 再重新查一次以获取 wordId
+                        wordFuture =
+                            await DBProvider.db.getWordByWord(item['baseform']);
+                        var newDBCorpus = Corpus(
+                          corpus: widget.arguments['paras'],
+                          language: widget.arguments['language'],
+                          wordId: wordFuture.wordId,
+                        );
+                        // 将新语料增加至数据库
+                        await DBProvider.db.newCorpus(newDBCorpus);
                       }
                     }
                     jumpToWordListPage();

@@ -1,4 +1,7 @@
+import 'package:facewords/utils/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:facewords/models/corpus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DictionaryPage extends StatefulWidget {
@@ -12,16 +15,32 @@ class DictionaryPage extends StatefulWidget {
 class _DictionaryPageState extends State<DictionaryPage> {
   bool _isLoading = true;
   int _currentIndex = 0;
+  Future<List<Corpus>> _corpusListFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _corpusListFuture = getCorpusList();
+  }
+
+  Future<List<Corpus>> getCorpusList() async {
+    print('[_DictionaryPageState][getCorpusList]');
+    final _corpusListData =
+        await DBProvider.db.getCorpusByWordId(widget.arguments['wordId']);
+    return _corpusListData;
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Dictionary'),
           bottom: TabBar(
+            isScrollable: true,
             tabs: <Widget>[
+              Tab(text: 'Custom'),
               Tab(text: 'Jisho'),
               Tab(text: 'Weblio'),
               Tab(text: 'JapanDict'),
@@ -44,6 +63,56 @@ class _DictionaryPageState extends State<DictionaryPage> {
           // 禁止左右滑动切换 Tab
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
+            Scrollbar(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                    child: Text(
+                      widget.arguments['word'],
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
+                    child: Text(
+                      widget.arguments['meaning'] == null
+                          ? 'No custom definitions yet'
+                          : widget.arguments['meaning'],
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: FutureBuilder<List>(
+                      future: _corpusListFuture,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<List<dynamic>> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              Corpus item = snapshot.data[index];
+                              return ListTile(
+                                leading: Icon(Icons.book, size: 30),
+                                title: Text(item.corpus),
+                              );
+                            },
+                          );
+                        } else {
+                          return Text('No Corpus');
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Stack(
               children: <Widget>[
                 WebView(
