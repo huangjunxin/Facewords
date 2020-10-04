@@ -9,7 +9,9 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('SettingPage'),
+      body: Center(
+        child: Text('No setting'),
+      ),
     );
   }
 }
