@@ -4,7 +4,7 @@ A personal new word bank construction tool based on natural corpus built by Flut
 
 利用Flutter建立的基于自然语料的个人生词库构建工具
 
-*In fact, this is also my Android development course assignment*
+*This is also my final assignment of the course Android development*
 
 Current version: Alpha 0.5.36
 
