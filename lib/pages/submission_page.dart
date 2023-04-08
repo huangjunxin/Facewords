@@ -75,8 +75,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                 print(
                     '[_SubmissionPageState][RaisedButton][onPressed]: Submit!');
                 Navigator.pushNamed(context, '/submit_result_page', arguments: {
-                  'submitUrl':
-                      'https://mecab-web-api.herokuapp.com/v1/parse?sentence=',
+                  'submitUrl': 'https://labs.goo.ne.jp/api/morph',
                   'paras': corpusTextController.text,
                   'language': corpusLanguage,
                 });

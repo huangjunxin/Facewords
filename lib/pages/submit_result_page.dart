@@ -22,12 +22,13 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
   @override
   void initState() {
     super.initState();
-    _getSubmitResult();
+    // _getSubmitResult();
+    _postSubmitResult();
   }
 
   // 格式化 wordList
-  List<Widget> get _formatWordList {
-    print('[_SubmitResultPageState][_formatWordList]');
+  List<Widget> get _oldFormatWordList {
+    print('[_SubmitResultPageState][_oldFormatWordList]');
     List<Widget> tempList = [];
     for (var item in _resultList) {
       if (item['pos'] == '記号') {
@@ -70,10 +71,64 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
     }
   }
 
+  // 格式化 wordList
+  List<Widget> get _formatWordList {
+    print('[_SubmitResultPageState][_formatWordList]');
+    List<Widget> tempList = [];
+    for (var item in _resultList) {
+      if (item[1] == '読点' || item[1] == '句点') {
+        // 若当前项为 符号，则此项不允许被选中
+        tempList.add(ChoiceChip(
+          label: Text(item[0]),
+          selected: _selectedList.contains(item),
+        ));
+      } else {
+        // 否则则直接显示
+        tempList.add(ChoiceChip(
+          label: Text(item[0]),
+          selected: _selectedList.contains(item), // 判定是否选中
+          onSelected: (selected) {
+            setState(() {
+              _selectedList.contains(item)
+                  ? _selectedList.remove(item)
+                  : _selectedList.add(item);
+            });
+          },
+        ));
+      }
+    }
+    return tempList;
+  }
+  
+  // post 请求 api 分词结果
+  _postSubmitResult() async {
+    print('[_SubmitResultPageState][_postSubmitResult]: Started');
+    var res = await http.post(
+      widget.arguments['submitUrl'],
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: jsonEncode({
+        'app_id': 'f22a04486571a7411ccd544a3c4c3f0fbe09c2b60a146df034063a554c281e17',
+        'sentence': widget.arguments['paras']
+      })
+    );
+    if (res.statusCode == 200) {
+      print('[_SubmitResultPageState][_postSubmitResult]: Succeed');
+      setState(() {
+        this._resultList =
+        jsonDecode(utf8.decode(res.bodyBytes))['word_list'][0];
+      });
+      print('[_SubmitResultPageState][_postSubmitResult]: ' + this._resultList.toString());
+    } else {
+      throw Exception('failed');
+    }
+  }
+
   // 跳转至 Word List
   jumpToWordListPage() {
     Navigator.pushNamedAndRemoveUntil(
-      context,
+      this.context,
       '/',
       (route) => route == null,
       arguments: {
@@ -103,22 +158,22 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
                         '[_SubmitResultPageState][FlatButton][onPressed]: Continue');
                     for (var item in _selectedList) {
                       var wordFuture =
-                          await DBProvider.db.getWordByWord(item['baseform']);
+                          await DBProvider.db.getWordByWord(item[0]);
 
                       if (wordFuture != null) {
                         // 若数据库中已存在当前项，则只将其count值加1
                         print(
-                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item['baseform']} already exists');
+                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item[0]} already exists');
                         wordFuture.count++;
                         await DBProvider.db.updateWord(wordFuture);
                       } else {
                         // 若数据库中不存在当前项，则新增项目
                         print(
-                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item['baseform']} does not exist');
+                            '[_SubmitResultPageState][FlatButton][onPressed]: ${item[0]} does not exist');
                         var newDBWord = Word(
-                          word: item['baseform'],
+                          word: item[0],
                           language: 'ja',
-                          pos: item['pos'],
+                          pos: item[1],
                           meaning: null,
                           count: 1,
                         );
@@ -126,7 +181,7 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
                         await DBProvider.db.newWord(newDBWord);
                         // 再重新查一次以获取 wordId
                         wordFuture =
-                            await DBProvider.db.getWordByWord(item['baseform']);
+                            await DBProvider.db.getWordByWord(item[0]);
                         var newDBCorpus = Corpus(
                           corpus: widget.arguments['paras'],
                           language: widget.arguments['language'],
