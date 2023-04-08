@@ -56,15 +56,15 @@ class _TabsState extends State<Tabs> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            title: Text('Submission'),
+            label: 'Submission',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            title: Text('Word List'),
+            label: 'Word List',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            title: Text('Settings'),
+            label: 'Settings',
           ),
         ],
       ),

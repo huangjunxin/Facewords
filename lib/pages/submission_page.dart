@@ -69,7 +69,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                 ],
               ),
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Submit!'),
               onPressed: () {
                 print(

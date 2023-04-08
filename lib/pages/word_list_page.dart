@@ -164,8 +164,8 @@ class _WordListPageState extends State<WordListPage> {
                             });
                           });
                           // 删除成功后显示下方提示栏
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          Scaffold.of(context).showSnackBar(
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('"${item.word}" is deleted'),
                               action: SnackBarAction(

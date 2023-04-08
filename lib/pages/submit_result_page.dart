@@ -88,10 +88,13 @@ class _SubmitResultPageState extends State<SubmitResultPage> {
       appBar: AppBar(
         title: Text('Result'),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('Continue'),
-            textColor: Colors.white,
-            color: Color(0x000000),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
+            // textColor: Colors.white,
+            // color: Color(0x000000),
             onPressed: this._resultList.length == 0 // 若请求 api 未获取到结果
                 ? null // 则使按钮 disabled
                 : () async {

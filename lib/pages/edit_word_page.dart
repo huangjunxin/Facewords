@@ -38,10 +38,13 @@ class _EditWordPageState extends State<EditWordPage> {
       appBar: AppBar(
         title: Text(widget.arguments['word']),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             child: Text('Edit'),
-            textColor: Colors.white,
-            color: Color(0x000000),
+            // textColor: Colors.white,
+            // color: Color(0x000000),
             onPressed: () async {
               // 否则，下方为点击按钮所做的操作
               print('[_EditWordPageState][FlatButton][onPressed]: Edit');
